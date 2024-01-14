@@ -1,0 +1,26 @@
+{
+    "name": "Veiitech.Modules.Ad.SMAI_Appodeal",
+    "rootNamespace": "",
+    "references": [
+        "GUID:4e20c7306599b442b84e265cb179eddc",
+        "GUID:1f613da493e88413786955ac61fc9673",
+        "GUID:e160d5666e3724cf68954581efdbfc7c",
+        "GUID:4588a7cd4de264761b9cdc44b39390ef",
+        "GUID:bdf21ae0883b04f7b9dc4f4d26c8f9ff",
+        "GUID:95d01e3696df24806ad42e5ab06ddef9",
+        "GUID:201b10dbf5cbb4611a528cdad9d57a16"
+    ],
+    "includePlatforms": [
+        "Android",
+        "Editor",
+        "iOS"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
