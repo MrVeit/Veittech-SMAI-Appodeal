@@ -1,6 +1,7 @@
 #  SMAI APPODEAL
-[![Version](https://img.shields.io/badge/Version-1.0.0-318CE7.svg?color=318CE7&style=flat-square)](package.json) 
-[![Unity](https://img.shields.io/badge/Unity-2020.3.16+-2296F3.svg?color=318CE7&style=flat-square)](https://unity.com/)
+[![License](https://img.shields.io/github/license/mrveit/veittech-smai-appodeal?color=318CE7&style=flat-square)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-1.0.5-318CE7.svg?color=318CE7&style=flat-square)](package.json) 
+[![Unity](https://img.shields.io/badge/Unity-2020.3.16+-2296F3.svg?color=318CE7&style=flat-square)](https://unity.com/releases/editor/archive)
 
 **SMAIL Appodeal** is all about speeding up the integration of the Appodeal Ad SDK into your project with a user-friendly api that minimizes unnecessary code.
 
@@ -75,14 +76,17 @@ public void Init()
 For detailed configuration of banner ads there are 3 following initialization methods, which you can read about in detail in the official Appodeal SDK documentation, in the section [about banner ads](https://docs.appodeal.com/unity/ad-types/banner#enable-728x90-banners) 
 
 ```c#
+public void Init()
+{
     var adConfig = new AdConfigAdapter.Builder(ANDROID_APP_KEY, AD_TYPES)
-          .WithTestMode()
-          .WithSafeArea()
-          .WithMuteVideoAd()
-          .WithBannerAnimation()
-          .WithSmartBanners()
-          .WithTabletBanners()
-          .Build();
+        .WithTestMode()
+        .WithSafeArea()
+        .WithMuteVideoAd()
+        .WithBannerAnimation()
+        .WithSmartBanners()
+        .WithTabletBanners()
+        .Build();
+}
 ```
 
 # Usage template video ad
@@ -94,58 +98,64 @@ For cross-page and reward ads, there is one important setting in the config that
 **RECOMMENDED**: Do not activate auto-caching when initializing the config, but call manual ad caching 30-60 seconds before the potential display location.
 
 ```c#
+public void CacheVideoAd()
+{
     IVideoAd videoAd = new InterstitialAdAdapter();
     videoAd.Cache();
 
     IVideoAd videoAd = new RewardedAdAdapter();
     videoAd.Cache();
+}
 ```
 The logic of the show itself would look like this:
 
 ```c#
+public void ShowVideoAd()
+{
     IVideoAd videoAd = new InterstitialAdAdapter();
     videoAd.Show();
 
     IVideoAd videoAd = new RewardedAdAdapter();
     videoAd.Show();
+}
 ```
 
 To give out rewards for watching ads, the Appodeal SDK has a handy [callback system.](https://docs.appodeal.com/unity/ad-types/rewarded-video#callbacks)
 An example implementation of giving out a reward after the show is shown below:
 ```c#
-    public sealed class DemoUsageTemplate : MonoBehaviour
+public sealed class DemoUsageTemplate : MonoBehaviour
+{
+    [SerializeField, Space(10)] private Button _rewardedAdButton;
+
+    private IVideoAd _rewardedAd;
+
+    private void OnEnable()
     {
-        [SerializeField, Space(10)] private Button _rewardedAdButton;
-
-        private IVideoAd _rewardedAd;
-
-        private void OnEnable()
-        {
-            AppodealCallbacks.RewardedVideo.OnFinished += ClaimReward;
-        }
-
-        private void OnDisable()
-        {
-            AppodealCallbacks.RewardedVideo.OnFinished -= ClaimReward;
-        }
-
-        private void Start()
-        {
-            _rewardedAd = new RewardedAdAdapter();
-
-            _rewardedAdButton.onClick.AddListener(ShowRewardedAd);
-        }
-
-        private void ShowRewardedAd()
-        {
-            _rewardedAd.Show();
-        }
-
-        private void ClaimReward(object sender, RewardedVideoFinishedEventArgs serverReward)
-        {
-            Debug.Log($"Reward {serverReward.Amount} after watch ad claimed!");
-        }
+        AppodealCallbacks.RewardedVideo.OnFinished += ClaimReward;
     }
+
+    private void OnDisable()
+    {
+        AppodealCallbacks.RewardedVideo.OnFinished -= ClaimReward;
+    }
+
+    private void Start()
+    {
+        _rewardedAd = new RewardedAdAdapter();
+
+        _rewardedAdButton.onClick.AddListener(ShowRewardedAd);
+    }
+
+    private void ShowRewardedAd()
+    {
+        _rewardedAd.Show();
+    }
+
+    private void ClaimReward(object sender, RewardedVideoFinishedEventArgs serverReward)
+    {
+        Debug.Log($"Reward {serverReward.Amount} after watch ad claimed!");
+    }
+}
 ```
 
 # Usage template banner ad
@@ -154,6 +164,8 @@ There are 4 banner implementations in Appodeal SDK, between them they differ in 
 
 1. Standard banner with a size of 320x50 and the ability to set the position [from 4 options](https://docs.appodeal.com/unity/ad-types/banner#display):
 ```c#
+public void ShowClassicBanner()
+{
     IBannerAd bannerAd = new ClassicBannerAdAdapter(AppodealShowStyle.BannerBottom);
     bannerAd.Show();
 
@@ -165,11 +177,14 @@ There are 4 banner implementations in Appodeal SDK, between them they differ in 
 
     IBannerAd bannerAd = new ClassicBannerAdAdapter(AppodealShowStyle.BannerRight);
     bannerAd.Show();
+}
 ```
 2. Wide format banner (or tablet banner) size 728x90. It is activated in the same way as the first type of banner, but for it to work correctly, you need to add the **.WithTabletBanners()** method to the config.
 3. Banner with custom position, the size can be standard - 320x50 or tablet - 728x90. You can read the details in the relevant [section of the banners.](https://docs.appodeal.com/unity/ad-types/banner#displaying-banner-at-custom-position). Position constants **ARE NOT MANDATORY** and you can set them yourself, depending on your needs.
 It has horizontal and vertical position adjustment:
 ```c#
+pub void ShowCustomBanner()
+{
     IBannerAd bannerAd = new CustomBannerAdAdapter(AppodealViewPosition.HorizontalSmart, AppodealViewPosition.VerticalBottom);
     bannerAd.Show();
 
@@ -181,12 +196,15 @@ It has horizontal and vertical position adjustment:
 
     IBannerAd bannerAd = new CustomBannerAdAdapter(AppodealViewPosition.HorizontalLeft, AppodealViewPosition.VerticalTop);
     bannerAd.Show();
+}
 ```
 
 4. The final type of banners in the Appodeal SDK [are **MREC banners**](https://docs.appodeal.com/ru/unity/ad-types/mrec).
 They perform exactly the same role as the 3rd type of banners, but have a much larger size - 300 x 250.
 The following shows the implementation in SMAI Appodeal:
 ```c#
+public void ShowMrecBanner()
+{
     IBannerAd bannerAd = new MrecAdAdapter(AppodealViewPosition.HorizontalSmart, AppodealViewPosition.VerticalBottom);
     bannerAd.Show();
 
@@ -198,6 +216,7 @@ The following shows the implementation in SMAI Appodeal:
 
     IBannerAd bannerAd = new MrecAdAdapter(AppodealViewPosition.HorizontalLeft, AppodealViewPosition.VerticalTop);
     bannerAd.Show();
+}
 ```
 
 Сontact us:
