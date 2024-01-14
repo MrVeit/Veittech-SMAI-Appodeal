@@ -183,7 +183,7 @@ public void ShowClassicBanner()
 3. Banner with custom position, the size can be standard - 320x50 or tablet - 728x90. You can read the details in the relevant [section of the banners.](https://docs.appodeal.com/unity/ad-types/banner#displaying-banner-at-custom-position). Position constants **ARE NOT MANDATORY** and you can set them yourself, depending on your needs.
 It has horizontal and vertical position adjustment:
 ```c#
-pub void ShowCustomBanner()
+public void ShowCustomBanner()
 {
     IBannerAd bannerAd = new CustomBannerAdAdapter(AppodealViewPosition.HorizontalSmart, AppodealViewPosition.VerticalBottom);
     bannerAd.Show();
