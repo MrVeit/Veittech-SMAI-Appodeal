@@ -1,6 +1,6 @@
 #  SMAI APPODEAL
 [![License](https://img.shields.io/github/license/mrveit/veittech-smai-appodeal?color=318CE7&style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.0.5-318CE7.svg?color=318CE7&style=flat-square)](package.json) 
+[![Version](https://img.shields.io/github/package-json/v/mrveit/veittech-smai-appodeal?color=318CE7&style=flat-square)](package.json)
 [![Unity](https://img.shields.io/badge/Unity-2020.3.16+-2296F3.svg?color=318CE7&style=flat-square)](https://unity.com/releases/editor/archive)
 
 **SMAIL Appodeal** is to speed up the integration of Appodeal Ad SDK into your project with a user-friendly api that reduces unnecessary lines of code.
