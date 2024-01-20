@@ -29,8 +29,34 @@ You can also clone the code into your Unity project.
 
 First of all, you need to initialize the plugin before the first display of ads as follows:
 
+**BEFORE:**
 ```c#
-public sealed class AdAdapter : MonoBehaviour
+public sealed class StandartAppodealIntegration : MonoBehaviour
+{
+    private const string ANDROID_APP_KEY = AdInitializationKeys.AppodealKeys.ANDROID_KEY;
+
+    private const int AD_TYPES = AppodealAdType.Interstitial | AppodealAdType.RewardedVideo
+                               | AppodealAdType.Banner | AppodealAdType.Mrec;
+
+    public void Init()
+    {
+        Appodeal.SetTesting(true);
+        Appodeal.SetUseSafeArea(true);
+        Appodeal.MuteVideosIfCallsMuted(true)
+
+        AppodealCallbacks.Sdk.OnInitialized += OnInitializationFinished;
+
+#if UNITY_ANDROID
+        Appodeal.Initialize(ANDROID_APP_KEY, AD_TYPES);
+#endif
+    }
+
+    public void OnInitializationFinished(object sender, SdkInitializedEventArgs e) {}
+}
+```
+**AFTER:**
+```c#
+public sealed class AppodealIntegrationWithSMAI : MonoBehaviour
 {
     private const string APP_KEY = AdInitializationKeys.AppodealKeys.ANDROID_KEY;
 
