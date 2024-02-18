@@ -20,6 +20,8 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
         public bool SmartBanners { get; private set; }
         public bool TabletBanner { get; private set; }
 
+        public AppodealLogLevel LogLevel { get; private set; }
+
         private AdConfigAdapter(Builder builder)
         {
             this.AndroidAppKey = builder.AndroidAppKey;
@@ -34,6 +36,7 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
             this.SmartBanners = builder.SmartBanners;
             this.TabletBanner = builder.TabletBanner;
             this.BannerAnimation = builder.BannerAnimation;
+            this.LogLevel = builder.LogLevel;
         }
 
         public sealed class Builder
@@ -52,6 +55,8 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
             internal bool BannerAnimation { get; private set; }
             internal bool SmartBanners { get; private set; }
             internal bool TabletBanner { get; private set; }
+
+            internal AppodealLogLevel LogLevel { get; private set; }
 
             public Builder(string androidAppKey, int adTypes)
             {
@@ -141,6 +146,15 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
                 this.TabletBanner = true;
 
                 Appodeal.SetTabletBanners(this.TabletBanner);
+
+                return this;
+            }
+
+            public Builder WithLogLevel(AppodealLogLevel level)
+            {
+                this.LogLevel = level;
+
+                Appodeal.SetLogLevel(level);
 
                 return this;
             }
