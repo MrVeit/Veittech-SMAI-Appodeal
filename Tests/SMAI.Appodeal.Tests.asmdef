@@ -4,7 +4,8 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Veiitech.Modules.Ad.SMAI_Appodeal"
+        "Veiitech.Modules.Ad.SMAI_Appodeal",
+        "SMAI.Appodeal.Editor"
     ],
     "includePlatforms": [
         "Android",
