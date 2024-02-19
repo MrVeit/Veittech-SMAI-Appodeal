@@ -1,14 +1,27 @@
-using Veittech.Modules.Ad.SMAI_Appodeal.Editor.SettingsWindow;
-
 namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
 {
-    public static class AdInitializationKeys
+    public sealed class AdInitializationKeys
     {
-        public sealed class AppodealKeys
+        private readonly AppKeysProxy _appKeysProxy;
+
+        public AdInitializationKeys()
         {
-            public readonly string ANDROID_KEY = SMAISettings.Instance.AndroidAppKey;
-            public readonly string AMAZON_KEY = SMAISettings.Instance.AmazonAndroidAppKey;
-            public readonly string IOS_KEY = SMAISettings.Instance.IOSAppKey;
+            _appKeysProxy = new AppKeysProxy();
+        }
+
+        public string GetAndroidKey()
+        {
+            return _appKeysProxy.GetAndroidKey();
+        }
+
+        public string GetAmazonKey()
+        {
+            return _appKeysProxy.GetAmazonKey();
+        }
+
+        public string GetIosKey()
+        {
+            return _appKeysProxy.GetIOSKey();
         }
     }
 }

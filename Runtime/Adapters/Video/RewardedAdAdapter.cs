@@ -1,5 +1,5 @@
-using AppodealStack.Monetization.Common;
 using System;
+using AppodealStack.Monetization.Common;
 using Veittech.Modules.Ad.SMAI_Appodeal.Common;
 
 namespace Veittech.Modules.Ad.SMAI_Appodeal

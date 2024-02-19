@@ -1,7 +1,8 @@
 using System.IO;
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
 using Veittech.Modules.Ad.SMAI_Appodeal.Editor.Common;
+using Veittech.Modules.Ad.SMAI_Appodeal.Utils;
 
 // ReSharper Disable CheckNamespace
 namespace Veittech.Modules.Ad.SMAI_Appodeal.Editor.SettingsWindow
@@ -12,7 +13,7 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Editor.SettingsWindow
         [SerializeField] private string _androidAmazonAppKey = SMAIConstants.START_AMAZON_KEY;
         [SerializeField] private string _iosAppKey = SMAIConstants.START_IOS_KEY;
 
-        private const string SETTINGS_FILE_NAME = "SMAI_Settings.asset";
+        public const string SETTINGS_FILE_NAME = "SMAI_Settings.asset";
 
         private static SMAISettings _instance;
 
@@ -23,17 +24,19 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Editor.SettingsWindow
                 if (_instance)
                     return _instance;
 
-                string filePath = $"{SMAIConstants.EDITOR_COMPONENTS_PATH}/{SETTINGS_FILE_NAME}";
+                string folder = SMAIConstants.EDITOR_COMPONENTS_PATH; ;
+                string path = $"{folder}/{SETTINGS_FILE_NAME}";
 
-                Directory.CreateDirectory(SMAIConstants.EDITOR_COMPONENTS_PATH);
-
-                _instance = AssetDatabase.LoadAssetAtPath<SMAISettings>(filePath);
+                _instance = SMAIUtils.ScriptableObjectsTools.
+                    Target<SMAISettings>.LoadAssetAtPath(folder, path);
 
                 if (_instance)
                     return _instance;
 
-                _instance = CreateInstance<SMAISettings>();
-                AssetDatabase.CreateAsset(_instance, filePath);
+                _instance = SMAIUtils.ScriptableObjectsTools.
+                    Target<SMAISettings>.CreateInstance();
+
+                SMAIUtils.ScriptableObjectsTools.CreateAsset(_instance, path);
 
                 return _instance;
             }

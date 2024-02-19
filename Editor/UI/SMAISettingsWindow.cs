@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
+using Veittech.Modules.Ad.SMAI_Appodeal.Common;
 
 // ReSharper Disable CheckNamespace
 namespace Veittech.Modules.Ad.SMAI_Appodeal.Editor.SettingsWindow
@@ -10,13 +11,21 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Editor.SettingsWindow
     {
         private void OnDestroy()
         {
+            var runtimeStorage = AppKeysStorage.Instance;
+
+            UpdateRuntimeStorageBeforeDestroy();
+
             SMAISettings.SaveAsync();
             AssetDatabase.SaveAssets();
         }
 
         public static void ShowWindow()
         {
-            GetWindowWithRect(typeof(SMAISettingsWindow), new Rect(0, 0, 650, 150), true, "SMAI Settings");
+            var smaiSettings = (SMAISettingsWindow)GetWindow(typeof(SMAISettingsWindow));
+            smaiSettings.titleContent = new GUIContent("SMAI Settings");
+            smaiSettings.minSize = new Vector2(650, 150);
+            smaiSettings.maxSize = new Vector2(700, 150);
+            smaiSettings.Show();
         }
 
         private void OnGUI()
@@ -72,7 +81,7 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Editor.SettingsWindow
 
                 normal = new GUIStyleState()
                 {
-                    textColor = Color.cyan
+                    textColor = new Color(0.47f, 0.9f, 0.9f)
                 },
 
                 alignment = TextAnchor.MiddleCenter
@@ -112,6 +121,19 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Editor.SettingsWindow
             GUI.color = Color.grey;
             GUILayout.Box(GUIContent.none, lineStyle);
             GUI.color = color;
+        }
+
+        private void UpdateRuntimeStorageBeforeDestroy()
+        {
+            var runtimeStorage = Resources.Load<AppKeysStorage>(AppKeysStorage.FILE_NAME);
+
+            runtimeStorage.AndroidAppKey = SMAISettings.Instance.AndroidAppKey;
+            runtimeStorage.AmazonAppKey = SMAISettings.Instance.AmazonAndroidAppKey;
+            runtimeStorage.IosAppKey = SMAISettings.Instance.IOSAppKey;
+
+            AppKeysStorage.SaveAsync();
+
+            Debug.Log("[SMAI APPODEAL] Application key values successfully synchronized with runtime storage");
         }
     }
 }

@@ -1,6 +1,6 @@
 using AppodealStack.Monetization.Api;
 
-namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
+namespace Veittech.Modules.Ad.SMAI_Appodeal
 {
     public sealed class AdLoader
     {

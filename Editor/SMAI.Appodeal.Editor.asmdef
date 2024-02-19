@@ -1,7 +1,9 @@
 {
     "name": "SMAI.Appodeal.Editor",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:5bd533f9c2c54db46944b2772a3b6f00"
+    ],
     "includePlatforms": [
         "Editor"
     ],
