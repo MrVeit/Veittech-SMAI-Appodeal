@@ -1,7 +1,7 @@
 using UnityEngine;
 using NUnit.Framework;
+using Veittech.Modules.Ad.SMAI_Appodeal.Common;
 using Veittech.Modules.Ad.SMAI_Appodeal.Tests.Dummies;
-using Veittech.Modules.Ad.SMAI_Appodeal.Editor.SettingsWindow;
 
 namespace Veittech.Modules.Ad.SMAI_Appodeal.Tests
 {
@@ -10,15 +10,21 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Tests
         [Test]
         public void CheckAppKey()
         {
+            var keysStorage = new AdInitializationKeys();
+
+            var androidKey = keysStorage.GetAndroidKey();
+            var amazonKey = keysStorage.GetAmazonKey();
+            var iosKey = keysStorage.GetIosKey();
+
 #if UNITY_ANDROID
             DummyUtils.LogErrorAfterCheckKey(RuntimePlatform.Android,
-                 SMAISettings.Instance.AndroidAppKey, DummyUtils.GetErrorMessage(RuntimePlatform.Android, "Google Play"));
+                 androidKey, DummyUtils.GetErrorMessage(RuntimePlatform.Android, "Google Play"));
 
             DummyUtils.LogErrorAfterCheckKey(RuntimePlatform.Android,
-                 SMAISettings.Instance.AmazonAndroidAppKey, DummyUtils.GetErrorMessage(RuntimePlatform.Android, "Amazon Store"));
+                 amazonKey, DummyUtils.GetErrorMessage(RuntimePlatform.Android, "Amazon Store"));
 #elif UNITY_IOS
              DummyUtils.LogErrorAfterCheckKey(RuntimePlatform.IPhonePlayer,
-                 SMAISettings.Instance.IOSAppKey, GetErrorMessage(RuntimePlatform.IPhonePlayer, "App Store"));
+                 iosKey, GetErrorMessage(RuntimePlatform.IPhonePlayer, "App Store"));
 #endif
         }
     }
