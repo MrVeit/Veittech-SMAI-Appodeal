@@ -8,6 +8,7 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Utils
     {
         public sealed class ScriptableObjectsTools
         {
+#if UNITY_EDITOR
             public sealed class Target<T> where T : ScriptableObject
             {
                 public static T CreateInstance()
@@ -29,6 +30,7 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Utils
             {
                 AssetDatabase.CreateAsset(asset, path);
             }
+#endif
         }
     }
 }
