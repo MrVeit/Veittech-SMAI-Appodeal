@@ -38,8 +38,7 @@ public sealed class StandartAppodealIntegration : MonoBehaviour
 
     public void Init()
     {
-        var keysStorage = new AdInitializationKeys();
-        var androidKey = keysStorage.GetAndroidKey();
+        var androidKey = new AdInitializationKeys().GetAndroidKey();
 
         Appodeal.SetTesting(true);
         Appodeal.SetUseSafeArea(true);
@@ -64,8 +63,7 @@ public sealed class AppodealIntegrationWithSMAI : MonoBehaviour
 
     public void Init()
     {
-        var keysStorage = new AdInitializationKeys();
-        var androidKey = keysStorage.GetAndroidKey();
+        var androidKey = new AdInitializationKeys().GetAndroidKey();
 
         var adConfig = new AdConfigAdapter.Builder(androidKey, AD_TYPES)
           .WithTestMode()
@@ -113,8 +111,7 @@ For detailed configuration of banner ads there are 3 following initialization me
 ```c#
 public void Init()
 {
-    var keysStorage = new AdInitializationKeys();
-    var androidKey = keysStorage.GetAndroidKey();
+    var androidKey = new AdInitializationKeys().GetAndroidKey();
 
     var adConfig = new AdConfigAdapter.Builder(androidKey, AD_TYPES)
         .WithTestMode()
@@ -286,8 +283,7 @@ public void ShowMrecBanner()
 }
 ```
 
-Сontact us:
+# Support:
 
 [![Email](https://img.shields.io/badge/-gmail-090909?style=for-the-badge&logo=gmail)](https://mail.google.com/mail/?view=cm&fs=1&to=misster.veit@gmail.com)
-
 [![Telegram](https://img.shields.io/badge/-Telegram-090909?style=for-the-badge&logo=telegram)](https://t.me/MrVeit)
