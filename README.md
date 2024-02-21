@@ -78,11 +78,11 @@ The **AD_TYPES** constant specifies the types of advertisements that will be use
 
 In order for the Appodeal SDK to work correctly on two platforms, you need to initialize the application keys that are created [in the dashboard](https://app.appodeal.com/apps) on the Appodeal website. To do this, you need to set their values using the SMAI Appodeal settings window, which can be found at `SMAI -> Appodeal -> Settings`, having previously created them in the dashboard. 
 
-P.S: For convenience, the corresponding link to the key creation section can be opened by clicking on `Initialization App Keys`.
-
 <p align="center">
  <img width="700px" src="Assets/SMAISettingsPanel.png" alt="qr"/>
 </p>
+
+P.S: For convenience, the corresponding link to the key creation section can be opened by clicking on `Initialization App Keys`.
 
 **IMPORTANT**: For correct work of Appodeal SDK and avoiding ARN errors. It is necessary to **NOT DESTROY** the initialization config for advertising between scenes via the `DontDestroyOnLoad(gameObject)` method after its initialization.
 
