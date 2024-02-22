@@ -9,6 +9,8 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal
         private const int AD_TYPE = AppodealAdType.RewardedVideo;
         private const int AD_SHOW_STYLE = AppodealShowStyle.RewardedVideo;
 
+        private Action _rewardCallback;
+
         public sealed override void Show(string placement)
         {
             Show(placement, AD_TYPE, AD_SHOW_STYLE);
@@ -23,22 +25,28 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal
         {
             Show(placement, AD_TYPE, AD_SHOW_STYLE);
 
-            GiveRewardAfterWatch(rewardCallback);
+            SetRewardCallback(rewardCallback);
         }
 
         public void Show(Action rewardCallback)
         {
             Show();
 
-            GiveRewardAfterWatch(rewardCallback);
+            SetRewardCallback(rewardCallback);
         }
 
-        private void GiveRewardAfterWatch(Action rewardCallback)
+        private void SetRewardCallback(Action rewardCallback)
         {
-            AppodealCallbacks.RewardedVideo.OnFinished += (sender, serverReward) =>
-            {
-                rewardCallback?.Invoke();
-            };
+            _rewardCallback = rewardCallback;
+
+            AppodealCallbacks.RewardedVideo.OnFinished += GiveRewardAfterWatch;
+        }
+
+        private void GiveRewardAfterWatch(object sender, RewardedVideoFinishedEventArgs serverReward)
+        {
+            _rewardCallback?.Invoke();
+
+            AppodealCallbacks.RewardedVideo.OnFinished -= GiveRewardAfterWatch;
         }
     }
 }

@@ -6,6 +6,8 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Editor.Common
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public static class SMAIConstants
     {
+        public const string PLUGIN_LOG_NAME = "[SMAI APPODEAL]";
+
         public const string EDITOR_COMPONENTS_PATH = "Assets/SMAI/Editor/Appodeal/Internal Resources";
         public const string RUNTIME_RESOURCES_PATH = "Assets/Resources";
 

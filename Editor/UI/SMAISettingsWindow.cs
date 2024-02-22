@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 using UnityEditor;
 using Veittech.Modules.Ad.SMAI_Appodeal.Common;
+using Veittech.Modules.Ad.SMAI_Appodeal.Editor.Common;
 
 // ReSharper Disable CheckNamespace
 namespace Veittech.Modules.Ad.SMAI_Appodeal.Editor.SettingsWindow
@@ -133,7 +134,7 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Editor.SettingsWindow
 
             AppKeysStorage.SaveAsync();
 
-            Debug.Log("[SMAI APPODEAL] Application key values successfully synchronized with runtime storage");
+            Debug.Log($"{SMAIConstants.PLUGIN_LOG_NAME} Application key values successfully synchronized with runtime storage");
         }
     }
 }
