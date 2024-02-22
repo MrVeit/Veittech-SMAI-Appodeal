@@ -21,10 +21,12 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal
 
             var adLoader = new AdLoader(adType, placement);
 
-            if (adLoader.IsReadyAd())
+            if (!adLoader.IsReadyAd())
             {
-                Appodeal.Show(showStyle, placement);
+                return;
             }
+
+            Appodeal.Show(showStyle, placement);
         }
 
         public abstract void Cache();
