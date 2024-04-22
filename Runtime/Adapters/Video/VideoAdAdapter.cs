@@ -19,9 +19,7 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal
                 placement = AdPlacements.DEFAULT;
             }
 
-            var adLoader = new AdLoader(adType, placement);
-
-            if (!adLoader.IsReadyAd())
+            if (!IsLoaded())
             {
                 return;
             }
@@ -37,6 +35,29 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal
             {
                 Appodeal.Cache(adType);
             }
+        }
+
+        public abstract bool IsLoaded();
+
+        protected bool IsLoaded(int adType, string placement)
+        {
+            var adLoader = new AdLoader(adType, placement);
+
+            if (adLoader.IsReadyAd())
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public abstract double GetPredictedEcpm();
+
+        public abstract double GetPredictedEcpm(string placemen);
+
+        protected double GetPredictedEcpm(int adType, string placement)
+        {
+            return Appodeal.GetPredictedEcpmForPlacement(adType, placement);
         }
     }
 }

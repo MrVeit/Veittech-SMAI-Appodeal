@@ -48,5 +48,20 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal
 
             AppodealCallbacks.RewardedVideo.OnFinished -= GiveRewardAfterWatch;
         }
+
+        public sealed override bool IsLoaded()
+        {
+            return IsLoaded(AD_TYPE, AdPlacements.DEFAULT);
+        }
+
+        public sealed override double GetPredictedEcpm()
+        {
+            return GetPredictedEcpm(AD_TYPE, AdPlacements.DEFAULT);
+        }
+
+        public sealed override double GetPredictedEcpm(string placemen)
+        {
+            return GetPredictedEcpm(AD_TYPE, placemen);
+        }
     }
 }

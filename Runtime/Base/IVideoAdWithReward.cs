@@ -2,7 +2,7 @@ using System;
 
 namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
 {
-    public interface IVideoAdWithReward
+    public interface IVideoAdWithReward : IVideoAd
     {
         void Show(string placement, Action rewardCallback);
 

@@ -1,20 +1,30 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
 using AppodealStack.Monetization.Api;
 using AppodealStack.Monetization.Common;
+using Veittech.Modules.Ad.SMAI_Appodeal.Utils;
 
 namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
 {
     public sealed class AdConfigAdapter
     {
-        public string AndroidAppKey { get; private set; }
-        public string IOSAppKey { get; private set; }
+        public bool IsInitialized { get; private set; }
+        public bool IsTestMode { get; private set; }
+
         public int AdTypes { get; private set; }
 
-        public bool IsTestMode { get; private set; }
+        public string AndroidAppKey { get; private set; }
+        public string IOSAppKey { get; private set; }
+
         public bool SafeArea { get; private set; }
         public bool MuteVideoAd {get; private set; }
+        public bool ChildDirectedTreatment { get; private set; }
+
         public bool AutoCacheInterstitialAd { get; private set; }
         public bool AutoCacheRewardedAd { get; private set; }
-        public bool ChildDirectedTreatment { get; private set; }
+        public bool AutoCacheBannerAd { get; private set; }
+        public bool AutoCacheMrecAd { get; private set; }
 
         public bool BannerAnimation { get; private set; }
         public bool SmartBanners { get; private set; }
@@ -22,41 +32,58 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
 
         public AppodealLogLevel LogLevel { get; private set; }
 
+        public IReadOnlyList<string> DisabledNetworksNames { get; private set; }
+        public IReadOnlyList<AppodealAdNetworks> DisabledNetworks { get; private set; }
+
         private AdConfigAdapter(Builder builder)
         {
+            this.IsInitialized = builder.IsInitialized;
+            this.IsTestMode = builder.IsTestMode;
+            this.AdTypes = builder.AdTypes;
             this.AndroidAppKey = builder.AndroidAppKey;
             this.IOSAppKey = builder.IOSAppKey;
-            this.AdTypes = builder.AdTypes;
-            this.IsTestMode = builder.IsTestMode;
             this.MuteVideoAd = builder.MuteVideoAd;
             this.SafeArea = builder.SafeArea;
+            this.ChildDirectedTreatment = builder.ChildDirectedTreatment;
             this.AutoCacheInterstitialAd = builder.AutoCacheInterstitialAd;
             this.AutoCacheRewardedAd = builder.AutoCacheRewardedAd;
-            this.ChildDirectedTreatment = builder.ChildDirectedTreatment;
+            this.AutoCacheBannerAd = builder.AutoCacheBannerAd;
+            this.AutoCacheMrecAd = builder.AutoCacheMrecAd;
             this.SmartBanners = builder.SmartBanners;
             this.TabletBanner = builder.TabletBanner;
             this.BannerAnimation = builder.BannerAnimation;
             this.LogLevel = builder.LogLevel;
+            this.DisabledNetworks = builder.DisabledNetworks;
+            this.DisabledNetworksNames = builder.DisabledNetworksNames;
         }
 
         public sealed class Builder
         {
+            internal bool IsInitialized { get; private set; }
+            internal bool IsTestMode { get; private set; }
+
+            internal int AdTypes { get; private set; }
+
             internal string AndroidAppKey { get; private set; }
             internal string IOSAppKey { get; private set; }
-            internal int AdTypes { get; private set; }
-            internal bool IsTestMode { get; private set; }
 
             internal bool SafeArea { get; private set; }
             internal bool MuteVideoAd { get; private set; }
+            internal bool ChildDirectedTreatment { get; private set; }
+
             internal bool AutoCacheInterstitialAd { get; private set; }
             internal bool AutoCacheRewardedAd { get; private set; }
-            internal bool ChildDirectedTreatment { get; private set; }
+            internal bool AutoCacheBannerAd { get; private set; }
+            internal bool AutoCacheMrecAd { get; private set; }
 
             internal bool BannerAnimation { get; private set; }
             internal bool SmartBanners { get; private set; }
             internal bool TabletBanner { get; private set; }
 
             internal AppodealLogLevel LogLevel { get; private set; }
+
+            internal List<string> DisabledNetworksNames { get; private set; }
+            internal List<AppodealAdNetworks> DisabledNetworks { get; private set; }
 
             public Builder(string androidAppKey, int adTypes)
             {
@@ -123,6 +150,24 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
                 return this;
             }
 
+            public Builder WithAutoCacheBannerAd()
+            {
+                this.AutoCacheBannerAd = true;
+
+                Appodeal.SetAutoCache(AppodealAdType.Banner, this.AutoCacheBannerAd);
+
+                return this;
+            }
+
+            public Builder WithAutoCacheMrecAd()
+            {
+                this.AutoCacheMrecAd = true;
+
+                Appodeal.SetAutoCache(AppodealAdType.Mrec, this.AutoCacheMrecAd);
+
+                return this;
+            }
+
             public Builder WithBannerAnimation()
             {
                 this.BannerAnimation = true;
@@ -159,6 +204,48 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
                 return this;
             }
 
+            public Builder WithDisableAdNetwork(AppodealAdNetworks network)
+            {
+                DisabledNetworks.Add(network);
+
+                SMAIAppodealUtils.AdTools.DisableNetwork(network);
+
+                return this;
+            }
+
+            public Builder WithDisableNetworks(AppodealAdNetworks[] networks)
+            {
+                foreach (var network in networks)
+                {
+                    DisabledNetworks.Add(network);
+                }
+
+                SMAIAppodealUtils.AdTools.DisableNetworks(networks);
+
+                return this;
+            }
+
+            public Builder WithDisableNetwork(string networkName)
+            { 
+                DisabledNetworksNames.Add(networkName);
+
+                SMAIAppodealUtils.AdTools.DisableNetwork(networkName);
+
+                return this;
+            }
+
+            public Builder WithDisableNetworks(string[] networksNames)
+            {
+                foreach (var networkName in networksNames)
+                {
+                    DisabledNetworksNames.Add(networkName);
+                }
+
+                SMAIAppodealUtils.AdTools.DisableNetworks(networksNames);
+
+                return this;
+            }
+
             public AdConfigAdapter Build()
             {
                 Appodeal.SetTesting(IsTestMode);
@@ -170,6 +257,47 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
 #endif
 
                 return new AdConfigAdapter(this);
+            }
+
+            public AdConfigAdapter Build(Action<bool, List<string>> initializationFinished)
+            {
+                AppodealCallbacks.Sdk.OnInitialized += 
+                    (sender, sdkInitializeArgs) =>
+                    {
+                        InitializationFinished(sender, sdkInitializeArgs);
+
+                        if (sdkInitializeArgs.Errors.Count < 1)
+                        {
+                            initializationFinished?.Invoke(true, sdkInitializeArgs.Errors);
+
+                            return;
+                        }
+
+                        initializationFinished?.Invoke(false, sdkInitializeArgs.Errors);
+                    };
+
+                Build();
+
+                return new AdConfigAdapter(this);
+            }
+
+            private void InitializationFinished(object sender,
+                SdkInitializedEventArgs sdkInitializedArgs)
+            {
+                AppodealCallbacks.Sdk.OnInitialized -= InitializationFinished;
+
+                if (sdkInitializedArgs.Errors.Count < 1)
+                {
+                    IsInitialized = true;
+
+                    return;
+                }
+
+                foreach (var item in sdkInitializedArgs.Errors)
+                {
+                    Debug.LogError($"[SMAI APPODEAL] Appodeal SDK initialization" +
+                        $" did not complete successfully, the reasons are as follows: {item}");
+                }
             }
         }
     }
