@@ -266,7 +266,7 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
                     {
                         InitializationFinished(sender, sdkInitializeArgs);
 
-                        if (sdkInitializeArgs.Errors.Count < 1)
+                        if (sdkInitializeArgs.Errors == null)
                         {
                             initializationFinished?.Invoke(true, sdkInitializeArgs.Errors);
 
@@ -286,7 +286,7 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
             {
                 AppodealCallbacks.Sdk.OnInitialized -= InitializationFinished;
 
-                if (sdkInitializedArgs.Errors.Count < 1)
+                if (sdkInitializedArgs.Errors == null)
                 {
                     IsInitialized = true;
 
