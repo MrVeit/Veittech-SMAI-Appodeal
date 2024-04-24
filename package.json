@@ -6,8 +6,7 @@
   "unity": "2020.3",
   "unityRelease": "0b5",
   "dependencies": {
-  "com.appodeal.mediation": "https://github.com/appodeal/appodeal-unity-plugin-upm.git#v3.2.1",
-  "com.google.external-dependency-manager": "1.2.175"
+  "com.appodeal.mediation": "https://github.com/appodeal/appodeal-unity-plugin-upm.git#v3.2.1"
   },
   "keywords": [
     "SMAI",
