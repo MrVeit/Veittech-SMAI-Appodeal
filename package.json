@@ -5,15 +5,15 @@
   "description": "Speed up the integration of the Appodeal Ad SDK into your project with a user-friendly api that reduces unnecessary code to a minimum.",
   "unity": "2020.3",
   "unityRelease": "0b5",
-"dependencies": {
-"com.appodeal.mediation": "https://github.com/appodeal/appodeal-unity-plugin-upm.git#v3.2.1",
-    "com.google.external-dependency-manager": "1.2.175"
+  "dependencies": {
+  "com.appodeal.mediation": "https://github.com/appodeal/appodeal-unity-plugin-upm.git#v3.2.1",
+  "com.google.external-dependency-manager": "1.2.175"
   },
   "keywords": [
     "SMAI",
     "SMAIAppodeal",
     "SimpleMobileAdsIntegration",
-"Monetization", "Ads"
+    "Monetization", "Ads"
   ],
   "samples": [
     {
@@ -25,7 +25,7 @@
   "author": 
   {
     "name": "MrVeit",
-    "email": "misster.veit@gmail.com"
-"telegram": "@MrVeit"
+    "email": "misster.veit@gmail.com",
+    "telegram": "@MrVeit"
   }
 }
