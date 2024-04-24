@@ -268,7 +268,7 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
 
                         if (sdkInitializeArgs.Errors == null)
                         {
-                            initializationFinished?.Invoke(true, sdkInitializeArgs.Errors);
+                            initializationFinished?.Invoke(true, null);
 
                             return;
                         }
