@@ -1,4 +1,5 @@
 using AppodealStack.Monetization.Api;
+using AppodealStack.Monetization.Common;
 using Veittech.Modules.Ad.SMAI_Appodeal.Common;
 
 namespace Veittech.Modules.Ad.SMAI_Appodeal.Utils
@@ -36,6 +37,16 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Utils
             public static void ShowDebugTestAd()
             {
                 Appodeal.ShowTestScreen();
+            }
+
+            public static bool IsInitialized(SdkInitializedEventArgs initArgs)
+            {
+                if (initArgs.Errors == null)
+                {
+                    return true;
+                }
+
+                return false;
             }
         }
     }

@@ -259,21 +259,21 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
                 return new AdConfigAdapter(this);
             }
 
-            public AdConfigAdapter Build(Action<bool, List<string>> initializationFinished)
+            public AdConfigAdapter Build(Action<bool, IReadOnlyList<string>> initializationFinished)
             {
                 AppodealCallbacks.Sdk.OnInitialized += 
-                    (sender, sdkInitializeArgs) =>
+                    (sender, initArgs) =>
                     {
-                        InitializationFinished(sender, sdkInitializeArgs);
+                        InitializationFinished(sender, initArgs);
 
-                        if (sdkInitializeArgs.Errors == null)
+                        if (SMAIAppodealUtils.AdTools.IsInitialized(initArgs))
                         {
                             initializationFinished?.Invoke(true, null);
 
                             return;
                         }
 
-                        initializationFinished?.Invoke(false, sdkInitializeArgs.Errors);
+                        initializationFinished?.Invoke(false, initArgs.Errors);
                     };
 
                 Build();
@@ -282,18 +282,18 @@ namespace Veittech.Modules.Ad.SMAI_Appodeal.Common
             }
 
             private void InitializationFinished(object sender,
-                SdkInitializedEventArgs sdkInitializedArgs)
+                SdkInitializedEventArgs initArgs)
             {
                 AppodealCallbacks.Sdk.OnInitialized -= InitializationFinished;
 
-                if (sdkInitializedArgs.Errors == null)
+                if (SMAIAppodealUtils.AdTools.IsInitialized(initArgs))
                 {
                     IsInitialized = true;
 
                     return;
                 }
 
-                foreach (var item in sdkInitializedArgs.Errors)
+                foreach (var item in initArgs.Errors)
                 {
                     Debug.LogError($"[SMAI APPODEAL] Appodeal SDK initialization" +
                         $" did not complete successfully, the reasons are as follows: {item}");
