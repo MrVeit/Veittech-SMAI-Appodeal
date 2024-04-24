@@ -33,8 +33,8 @@ First of all, you need to initialize the plugin before the first display of ads 
 public sealed class StandartAppodealIntegration : MonoBehaviour
 {
     private const string ANDROID_APP_KEY = "86d0aa6e8153464944aba4856a59d64a16b99b9f7588f14d";
-    private const int AD_TYPES = AppodealAdType.Interstitial | AppodealAdType.RewardedVideo
-                               | AppodealAdType.Banner | AppodealAdType.Mrec;
+    private const int AD_TYPES = AppodealAdType.Interstitial | AppodealAdType.RewardedVideo |
+                                 AppodealAdType.Banner | AppodealAdType.Mrec;
 
     public void Init()
     {
@@ -96,10 +96,9 @@ public sealed class SMAIAppodealIntegration : MonoBehaviour
 The **AD_TYPES** constant specifies the types of advertisements that will be used
 in the project (if you doubt that one of the advertisement types will be used, it is better to delete it **to avoid generating unnecessary requests** to the Appodeal SDK).
 
-### Setting initialization key values:
+### Setting initialization key values
 
-In order for the Appodeal SDK to work correctly on two platforms, you need to initialize the application keys 
-that are created [in the dashboard](https://app.appodeal.com/apps) on the Appodeal website. 
+In order for the Appodeal SDK to work correctly on two platforms, you need to initialize the application keys that are created [in the dashboard](https://app.appodeal.com/apps) on the Appodeal website. 
 To do this, you need to set their values using the SMAI Appodeal settings window, which can be found at `SMAI -> Appodeal -> Settings`, having previously created them in the dashboard. 
 
 <p align="center">
@@ -129,7 +128,7 @@ public void Init()
 }
 ```
 
-### Banner configuration:
+### Banner configuration
 
 For detailed configuration of banner ads there are 3 following initialization methods, 
 which you can read about in detail in the official Appodeal SDK documentation, in the section [about banner ads](https://docs.appodeal.com/unity/ad-types/banner#enable-728x90-banners) 
@@ -148,10 +147,10 @@ public void Init()
 }
 ```
 
-### Activation automatic ad caching:
+### Activation automatic ad caching
 
 To activate automatic caching of advertisements for banners, you should use the following methods:
-`WithAutoCacheBannerAd()` or `WithAutoCacheMrecAd()` **(depends on the type of banner used in the project)**:
+`WithAutoCacheBannerAd()` and `WithAutoCacheMrecAd()` **(depends on the type of banner used in the project)**:
 ```c#
 public void Init()
 {
@@ -182,7 +181,7 @@ public void Init()
 ### Disable unused ad network:
 
 To disable requests to a specific ad network, methods **must be used when initializing the SMAI**:
-`WithDisableAdNetwork(AppodealAdNetworks adNetwork)`/`WithDisableAdNetwork(string networkName)`:
+`WithDisableAdNetwork(AppodealAdNetworks adNetwork)` or `WithDisableAdNetwork(string networkName)`:
 
 One ad network:
 ```c#
@@ -218,7 +217,7 @@ public void Init()
 
 # Usage template video ad
 
-### Ad Caching:
+### Ad Caching
 
 For cross-page and reward ads, there is one important setting in the config that allows you to **ACTIVATE AD AUTOCAСHING**. Once activated, ads will be loaded as they appear, which can significantly reduce the pause between displays if you plan to show them continuously, **BUT IN THAT CASE** you may reduce the [Display Rate](https://faq.appodeal.com/en/articles/973530-display-rate), because the player may simply not get to the point in the game where the ad is scheduled to be shown.
 
@@ -238,7 +237,7 @@ public void CacheVideoAd()
 }
 ```
 
-### Ad Showing:
+### Ad Showing
 
 After initializing our config in the bootstrap, we can move on to implementing the logic for displaying ads:
 ```c#
@@ -281,7 +280,7 @@ public sealed class FastImplementationOfRewardGiving : MonoBehaviour
 }
 ```
 
-### Other functions:
+### Other functions
 
 If you need to get [the ECPM from the currently cached ad](https://docs.appodeal.com/unity/ad-types/interstitial?distribution=upm#get-predicted-ecpm),
 you should use the `GetPredictedEcpm()` method:
@@ -298,10 +297,10 @@ public void CheckEcpm()
 
 # Usage template banner ad
 
-### Ad Caching:
+### Ad Caching
 
 The implementation of caching of advertisements in all types of banners coincides 
-with the logic [of use for video advertising](https://github.com/MrVeit/Veittech-SMAI-Appodeal/edit/master/README.md#ad-caching) and has the following form:
+with the logic [of use for video advertising](https://github.com/MrVeit/Veittech-SMAI-Appodeal?tab=readme-ov-file#ad-caching) and has the following form:
 ```c#
 public void CacheBannerAd()
 {
@@ -318,7 +317,7 @@ public void CacheBannerAd()
 }
 ```
 
-### Ad Showing:
+### Ad Showing
 
 There are 4 banner implementations in Appodeal SDK, between them they differ in size, which takes some part on the screen, as well as the ability to set a custom position:
 
@@ -340,7 +339,8 @@ public void ShowClassicBanner()
 }
 ```
 2. Wide format banner (or tablet banner) size 728x90. It is activated in the same way as the first type of banner, but for it to work correctly, you need to add the **.WithTabletBanners()** method to the config.
-3. Banner with custom position, the size can be standard - 320x50 or tablet - 728x90. You can read the details in the relevant [section of the banners.](https://docs.appodeal.com/unity/ad-types/banner#displaying-banner-at-custom-position). Position constants **ARE NOT MANDATORY** and you can set them yourself, depending on your needs.
+3. Banner with custom position, the size can be standard - 320x50 or tablet - 728x90.
+4. You can read the details in the relevant [section of the banners.](https://docs.appodeal.com/unity/ad-types/banner#displaying-banner-at-custom-position). Position constants **ARE NOT MANDATORY** and you can set them yourself, depending on your needs.
 It has horizontal and vertical position adjustment:
 ```c#
 public void ShowCustomBanner()
@@ -379,9 +379,10 @@ public void ShowMrecBanner()
 }
 ```
 
-### Other functions:
+### Other functions
 
-The implementation of obtaining the current ECPM for all types of banners coincides with [the implementation for video ads](https://github.com/MrVeit/Veittech-SMAI-Appodeal/edit/master/README.md#other-functions) and has the following form:
+The implementation of obtaining the current ECPM for all types of banners coincides with
+[the implementation for video ads](https://github.com/MrVeit/Veittech-SMAI-Appodeal?tab=readme-ov-file#other-functions) and has the following form:
 ```c#
 public void CheckEcpm()
 {
@@ -402,7 +403,7 @@ public void CheckEcpm()
 }
 ```
 
-# Support:
+# Support
 
 [![Email](https://img.shields.io/badge/-gmail-090909?style=for-the-badge&logo=gmail)](https://mail.google.com/mail/?view=cm&fs=1&to=misster.veit@gmail.com)
 [![Telegram](https://img.shields.io/badge/-Telegram-090909?style=for-the-badge&logo=telegram)](https://t.me/MrVeit)
