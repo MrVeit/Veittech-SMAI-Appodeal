@@ -19,27 +19,25 @@ or direct editing of `Packages/manifest.json`:
 ```
 "com.veittech.smai.appodeal": "https://github.com/MrVeit/Veittech-SMAI-Appodeal.git",
 ```
-
 **As source:**
 
-You can also clone the code into your Unity project.
-
+[Download a latest version via .unityPackage here](https://github.com/MrVeit/Veittech-SMAI-Appodeal/releases)
 
 # Initialization
 
-First of all, you need to initialize the plugin before the first display of ads as follows:
+First of all, you need to initialize the plugin before the first display of ads as follows.
+**For an explicit understanding** of what the standard Appodeal SDK initialization looks like without and with SMAI, two implementations are shown below:
 
-**BEFORE:**
+**STANDARD APPODEAL INITIALIZATION:**
 ```c#
 public sealed class StandartAppodealIntegration : MonoBehaviour
 {
+    private const string ANDROID_APP_KEY = "86d0aa6e8153464944aba4856a59d64a16b99b9f7588f14d";
     private const int AD_TYPES = AppodealAdType.Interstitial | AppodealAdType.RewardedVideo
                                | AppodealAdType.Banner | AppodealAdType.Mrec;
 
     public void Init()
     {
-        var androidKey = new AdInitializationKeys().GetAndroidKey();
-
         Appodeal.SetTesting(true);
         Appodeal.SetUseSafeArea(true);
         Appodeal.MuteVideosIfCallsMuted(true)
@@ -47,16 +45,22 @@ public sealed class StandartAppodealIntegration : MonoBehaviour
         AppodealCallbacks.Sdk.OnInitialized += OnInitializationFinished;
 
 #if UNITY_ANDROID
-        Appodeal.Initialize(androidKey, AD_TYPES);
+        Appodeal.Initialize(ANDROID_APP_KEY, AD_TYPES);
 #endif
     }
 
-    public void OnInitializationFinished(object sender, SdkInitializedEventArgs e) {}
+    public void OnInitializationFinished(object sender, SdkInitializedEventArgs e)
+    {
+        //Do something
+
+        AppodealCallbacks.Sdk.OnInitialized -= OnInitializationFinished;
+    }
 }
 ```
-**AFTER:**
+
+**IMPLEMENTATION OF APPODEAL INITIALIZATION WITH SMAI:**
 ```c#
-public sealed class AppodealIntegrationWithSMAI : MonoBehaviour
+public sealed class SMAIAppodealIntegration : MonoBehaviour
 {
     private const int AD_TYPES = AppodealAdType.Interstitial | AppodealAdType.RewardedVideo
                                | AppodealAdType.Banner | AppodealAdType.Mrec;
@@ -65,26 +69,45 @@ public sealed class AppodealIntegrationWithSMAI : MonoBehaviour
     {
         var androidKey = new AdInitializationKeys().GetAndroidKey();
 
-        var adConfig = new AdConfigAdapter.Builder(androidKey, AD_TYPES)
-          .WithTestMode()
-          .WithSafeArea()
-          .WithMuteVideoAd()
-          .Build();
+        var adConfigWithoutCallback = new AdConfigAdapter.Builder(androidKey, AD_TYPES)
+            .WithTestMode()
+            .WithSafeArea()
+            .WithMuteVideoAd()
+            .Build();
+
+        var adConfigWithCallback = new AdConfigAdapter.Builder(androidKey, AD_TYPES)
+            .WithTestMode()
+            .WithSafeArea()
+            .WithMuteVideoAd()
+            .Build((isSuccess, errorMessages) =>
+            {
+                Debug.Log($"[SMAI Appodeal] Appodeal SDK initialization finished with:" +
+                    $" Status: {isSuccess}");
+
+                if (isSuccess)
+                {
+                    //Do something
+                }
+            });
     }
 }
 ```
 
-The **AD_TYPES** constant specifies the types of advertisements that will be used in the project (if you doubt that one of the advertisement types will be used, it is better to delete it to avoid generating unnecessary requests to the Appodeal SDK).
+The **AD_TYPES** constant specifies the types of advertisements that will be used
+in the project (if you doubt that one of the advertisement types will be used, it is better to delete it **to avoid generating unnecessary requests** to the Appodeal SDK).
 
-In order for the Appodeal SDK to work correctly on two platforms, you need to initialize the application keys that are created [in the dashboard](https://app.appodeal.com/apps) on the Appodeal website. To do this, you need to set their values using the SMAI Appodeal settings window, which can be found at `SMAI -> Appodeal -> Settings`, having previously created them in the dashboard. 
+### Setting initialization key values:
+
+In order for the Appodeal SDK to work correctly on two platforms, you need to initialize the application keys 
+that are created [in the dashboard](https://app.appodeal.com/apps) on the Appodeal website. 
+To do this, you need to set their values using the SMAI Appodeal settings window, which can be found at `SMAI -> Appodeal -> Settings`, having previously created them in the dashboard. 
 
 <p align="center">
  <img width="700px" src="Assets/SMAISettingsPanel.png" alt="qr"/>
 </p>
 
-P.S: For convenience, the corresponding link to the key creation section can be opened by clicking on `Initialization App Keys`.
-
-**IMPORTANT**: For correct work of Appodeal SDK and avoiding ARN errors. It is necessary to **NOT DESTROY** the initialization config for advertising between scenes via the `DontDestroyOnLoad(gameObject)` method after its initialization.
+**IMPORTANT**: For correct work of Appodeal SDK and avoiding ARN errors. It is necessary to **NOT DESTROY** the initialization config 
+for advertising between scenes via the `DontDestroyOnLoad(gameObject)` method after its initialization.
 
 For example, if you have a project published under Google Play and App Store, the initialization method will have the following form:
 ```c#
@@ -106,8 +129,62 @@ public void Init()
 }
 ```
 
-For detailed configuration of banner ads there are 3 following initialization methods, which you can read about in detail in the official Appodeal SDK documentation, in the section [about banner ads](https://docs.appodeal.com/unity/ad-types/banner#enable-728x90-banners) 
+### Banner configuration:
 
+For detailed configuration of banner ads there are 3 following initialization methods, 
+which you can read about in detail in the official Appodeal SDK documentation, in the section [about banner ads](https://docs.appodeal.com/unity/ad-types/banner#enable-728x90-banners) 
+
+```c#
+public void Init()
+{
+    var androidKey = new AdInitializationKeys().GetAndroidKey();
+
+    var adConfig = new AdConfigAdapter.Builder(androidKey, AD_TYPES)
+        .WithTestMode()
+        .WithBannerAnimation()
+        .WithSmartBanners()
+        .WithTabletBanners()
+        .Build();
+}
+```
+
+### Activation automatic ad caching:
+
+To activate automatic caching of advertisements for banners, you should use the following methods:
+`WithAutoCacheBannerAd()` or `WithAutoCacheMrecAd()` **(depends on the type of banner used in the project)**:
+```c#
+public void Init()
+{
+    var androidKey = new AdInitializationKeys().GetAndroidKey();
+
+    var adConfig = new AdConfigAdapter.Builder(androidKey, AD_TYPES)
+        .WithTestMode()
+        .WithAutoCacheBannerAd()
+        .WithAutoCacheMrecAd()
+        .Build();
+}
+```
+
+For video advertising, you need to use methods: `WithAutoCacheInterstitialAd()` and `WithAutoCacheRewardedAd()`:
+```c#
+public void Init()
+{
+    var androidKey = new AdInitializationKeys().GetAndroidKey();
+
+    var adConfig = new AdConfigAdapter.Builder(androidKey, AD_TYPES)
+        .WithTestMode()
+        .WithAutoCacheInterstitialAd()
+        .WithAutoCacheRewardedAd()
+        .Build();
+}
+```
+
+### Disable unused ad network:
+
+To disable requests to a specific ad network, methods **must be used when initializing the SMAI**:
+`WithDisableAdNetwork(AppodealAdNetworks adNetwork)`/`WithDisableAdNetwork(string networkName)`:
+
+One ad network:
 ```c#
 public void Init()
 {
@@ -117,85 +194,67 @@ public void Init()
         .WithTestMode()
         .WithSafeArea()
         .WithMuteVideoAd()
-        .WithBannerAnimation()
-        .WithSmartBanners()
-        .WithTabletBanners()
+        .WithDisableAdNetwork(AppodealAdNetworks.admob)
+        .WithDisableNetwork(AppodealNetworks.Admob)
+        .Build();
+}
+```
+
+Multiple ad networks:
+```c#
+public void Init()
+{
+    var androidKey = new AdInitializationKeys().GetAndroidKey();
+
+    var adConfig = new AdConfigAdapter.Builder(androidKey, AD_TYPES)
+        .WithTestMode()
+        .WithSafeArea()
+        .WithMuteVideoAd()
+        .WithDisableNetworks(new[] { AppodealAdNetworks.bidmachine, AppodealAdNetworks.a4g })
+        .WithDisableNetworks(new[] { AppodealNetworks.BidMachine, AppodealNetworks.A4G })
         .Build();
 }
 ```
 
 # Usage template video ad
 
-After initializing our config in the bootstrap, we can move on to implementing the logic for displaying ads.
+### Ad Caching:
 
-For cross-page and reward ads, there is one important setting in the config that allows you to **ACTIVATE ADVERTISING AUTOCASHING**. Once activated, ads will be loaded as they appear, which can significantly reduce the pause between displays if you plan to show them continuously, **BUT IN THAT CASE** you may reduce the Display Rate, because the player may simply not get to the point in the game where the ad is scheduled to be shown.
+For cross-page and reward ads, there is one important setting in the config that allows you to **ACTIVATE AD AUTOCAСHING**. Once activated, ads will be loaded as they appear, which can significantly reduce the pause between displays if you plan to show them continuously, **BUT IN THAT CASE** you may reduce the [Display Rate](https://faq.appodeal.com/en/articles/973530-display-rate), because the player may simply not get to the point in the game where the ad is scheduled to be shown.
 
 **RECOMMENDED**: Do not activate auto-caching when initializing the config, but call manual ad caching 30-60 seconds before the potential display location.
 
 ```c#
 public void CacheVideoAd()
 {
-    IVideoAd videoAd = new InterstitialAdAdapter();
-    videoAd.Cache();
+    IVideoAd interstitialAd = new InterstitialAdAdapter();
+    interstitialAd.Cache();
 
-    IVideoAd videoAd = new RewardedAdAdapter();
-    videoAd.Cache();
+    IVideoAd rewardedAdWithoutReward = new RewardedAdAdapter();
+    rewardedAdWithoutReward.Cache();
+
+    IVideoAdWithReward rewardedAdWithReward = new RewardedAdAdapter();
+    rewardedAdWitReward.Cache();
 }
 ```
-The logic of the show itself would look like this:
 
+### Ad Showing:
+
+After initializing our config in the bootstrap, we can move on to implementing the logic for displaying ads:
 ```c#
 public void ShowVideoAd()
 {
-    IVideoAd videoAd = new InterstitialAdAdapter();
-    videoAd.Show();
+    IVideoAd interstitialAd = new InterstitialAdAdapter();
+    interstitialAd.Show();
 
-    IVideoAd videoAd = new RewardedAdAdapter();
-    videoAd.Show();
+    IVideoAd rewardedAdWithoutReward = new RewardedAdAdapter();
+    rewardedAdWithoutReward.Show();
 }
 ```
 
-Appodeal SDK provides a convenient [callback system](https://docs.appodeal.com/unity/ad-types/rewarded-video#callbacks) for issuing rewards for ad views. 
-Below are **2 examples of implementing such logic**, choose the appropriate way depending on the installed version of SMAI Appodeal in our project:
+Appodeal SDK provides a convenient [callback system](https://docs.appodeal.com/unity/ad-types/rewarded-video#callbacks) to issue rewards for ad views. 
+The implementation of rewarding ad views in SMAI Appodeal looks like this:
 
-### Implementing logic with award giving ON VERSION 1.0.7 and below:
-```c#
-public sealed class StandartImplementationOfRewardGiving : MonoBehaviour
-{
-    [SerializeField, Space(10)] private Button _rewardedAdButton;
-
-    private IVideoAd _rewardedAd;
-
-    private void OnEnable()
-    {
-        AppodealCallbacks.RewardedVideo.OnFinished += ClaimReward;
-    }
-
-    private void OnDisable()
-    {
-        AppodealCallbacks.RewardedVideo.OnFinished -= ClaimReward;
-    }
-
-    private void Start()
-    {
-        _rewardedAd = new RewardedAdAdapter();
-
-        _rewardedAdButton.onClick.AddListener(ShowRewardedAd);
-    }
-
-    private void ShowRewardedAd()
-    {
-        _rewardedAd.Show();
-    }
-
-    private void ClaimReward(object sender, RewardedVideoFinishedEventArgs serverReward)
-    {
-        Debug.Log($"Reward {serverReward.Amount} after watch ad claimed!");
-    }
-}
-```
-
-### Implementation of logic with awarding of rewards IN VERSION 1.0.8 and higher:
 ```c#
 public sealed class FastImplementationOfRewardGiving : MonoBehaviour
 {
@@ -222,7 +281,44 @@ public sealed class FastImplementationOfRewardGiving : MonoBehaviour
 }
 ```
 
+### Other functions:
+
+If you need to get [the ECPM from the currently cached ad](https://docs.appodeal.com/unity/ad-types/interstitial?distribution=upm#get-predicted-ecpm),
+you should use the `GetPredictedEcpm()` method:
+```c#
+public void CheckEcpm()
+{
+    IVideoAd interstitialAd = new InterstitialAdAdapter();
+    IVideoAdWithReward rewardedAd = new RewardedAdAdapter();
+
+    Debug.Log($"The current ECPM for interstitial advertising is {interstitialAd.GetPredictedEcpm()}");
+    Debug.Log($"The current ECPM for rewarded advertising is {rewardedAd.GetPredictedEcpm()}");
+}
+```
+
 # Usage template banner ad
+
+### Ad Caching:
+
+The implementation of caching of advertisements in all types of banners coincides 
+with the logic [of use for video advertising](https://github.com/MrVeit/Veittech-SMAI-Appodeal/edit/master/README.md#ad-caching) and has the following form:
+```c#
+public void CacheBannerAd()
+{
+    IBannerAd classicBannerAd = new ClassicBannerAdAdapter(AppodealShowStyle.BannerBottom);
+    classicBannerAd.Cache();
+
+    IBannerAd customBanner = new CustomBannerAdAdapter(
+        AppodealViewPosition.HorizontalSmart, AppodealViewPosition.VerticalBottom);
+    customBanner.Cache();
+
+    IBannerAd mrecBanner = new MrecAdAdapter(
+        AppodealViewPosition.HorizontalSmart, AppodealViewPosition.VerticalBottom);
+    mrecBanner.Cache();
+}
+```
+
+### Ad Showing:
 
 There are 4 banner implementations in Appodeal SDK, between them they differ in size, which takes some part on the screen, as well as the ability to set a custom position:
 
@@ -230,17 +326,17 @@ There are 4 banner implementations in Appodeal SDK, between them they differ in 
 ```c#
 public void ShowClassicBanner()
 {
-    IBannerAd bannerAd = new ClassicBannerAdAdapter(AppodealShowStyle.BannerBottom);
-    bannerAd.Show();
+    IBannerAd classicBottomBanner = new ClassicBannerAdAdapter(AppodealShowStyle.BannerBottom);
+    classicBottomBanner.Show();
 
-    IBannerAd bannerAd = new ClassicBannerAdAdapter(AppodealShowStyle.BannerTop);
-    bannerAd.Show();
+    IBannerAd classicTopBanner = new ClassicBannerAdAdapter(AppodealShowStyle.BannerTop);
+    classicTopBanner.Show();
 
-    IBannerAd bannerAd = new ClassicBannerAdAdapter(AppodealShowStyle.BannerLeft);
-    bannerAd.Show();
+    IBannerAd classicLeftBanner = new ClassicBannerAdAdapter(AppodealShowStyle.BannerLeft);
+    classicLeftBanner.Show();
 
-    IBannerAd bannerAd = new ClassicBannerAdAdapter(AppodealShowStyle.BannerRight);
-    bannerAd.Show();
+    IBannerAd classicRightBanner = new ClassicBannerAdAdapter(AppodealShowStyle.BannerRight);
+    classicRightBanner.Show();
 }
 ```
 2. Wide format banner (or tablet banner) size 728x90. It is activated in the same way as the first type of banner, but for it to work correctly, you need to add the **.WithTabletBanners()** method to the config.
@@ -283,7 +379,30 @@ public void ShowMrecBanner()
 }
 ```
 
-# Support
+### Other functions:
+
+The implementation of obtaining the current ECPM for all types of banners coincides with [the implementation for video ads](https://github.com/MrVeit/Veittech-SMAI-Appodeal/edit/master/README.md#other-functions) and has the following form:
+```c#
+public void CheckEcpm()
+{
+    IBannerAd classicBannerAd = new ClassicBannerAdAdapter(AppodealShowStyle.BannerBottom);
+    classicBannerAd.Cache();
+
+    IBannerAd customBanner = new CustomBannerAdAdapter(
+        AppodealViewPosition.HorizontalSmart, AppodealViewPosition.VerticalBottom);
+    customBanner.Cache();
+
+    IBannerAd mrecBanner = new MrecAdAdapter(
+        AppodealViewPosition.HorizontalSmart, AppodealViewPosition.VerticalBottom);
+    mrecBanner.Cache();
+
+    Debug.Log($"The current ECPM for classic banner ad is {classicBannerAd.GetPredictedEcpm()}");
+    Debug.Log($"The current ECPM for custom banner ad is {customBanner.GetPredictedEcpm()}");
+    Debug.Log($"The current ECPM for mrec banner ad is {mrecBanner.GetPredictedEcpm()}");
+}
+```
+
+# Support:
 
 [![Email](https://img.shields.io/badge/-gmail-090909?style=for-the-badge&logo=gmail)](https://mail.google.com/mail/?view=cm&fs=1&to=misster.veit@gmail.com)
 [![Telegram](https://img.shields.io/badge/-Telegram-090909?style=for-the-badge&logo=telegram)](https://t.me/MrVeit)
