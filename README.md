@@ -178,7 +178,7 @@ public void Init()
 }
 ```
 
-### Disable unused ad network:
+### Disable unused ad network
 
 To disable requests to a specific ad network, methods **must be used when initializing the SMAI**:
 `WithDisableAdNetwork(AppodealAdNetworks adNetwork)` or `WithDisableAdNetwork(string networkName)`:
@@ -345,16 +345,20 @@ It has horizontal and vertical position adjustment:
 ```c#
 public void ShowCustomBanner()
 {
-    IBannerAd bannerAd = new CustomBannerAdAdapter(AppodealViewPosition.HorizontalSmart, AppodealViewPosition.VerticalBottom);
+    IBannerAd bannerAd = new CustomBannerAdAdapter(
+        AppodealViewPosition.HorizontalSmart, AppodealViewPosition.VerticalBottom);
     bannerAd.Show();
 
-    IBannerAd bannerAd = new CustomBannerAdAdapter(AppodealViewPosition.HorizontalCenter, AppodealViewPosition.VerticalTop);
+    IBannerAd bannerAd = new CustomBannerAdAdapter(
+        AppodealViewPosition.HorizontalCenter, AppodealViewPosition.VerticalTop);
     bannerAd.Show();
 
-    IBannerAd bannerAd = new CustomBannerAdAdapter(AppodealViewPosition.HorizontalRight, AppodealViewPosition.VerticalBottom);
+    IBannerAd bannerAd = new CustomBannerAdAdapter(
+        AppodealViewPosition.HorizontalRight, AppodealViewPosition.VerticalBottom);
     bannerAd.Show();
 
-    IBannerAd bannerAd = new CustomBannerAdAdapter(AppodealViewPosition.HorizontalLeft, AppodealViewPosition.VerticalTop);
+    IBannerAd bannerAd = new CustomBannerAdAdapter(
+        AppodealViewPosition.HorizontalLeft, AppodealViewPosition.VerticalTop);
     bannerAd.Show();
 }
 ```
@@ -365,16 +369,20 @@ The following shows the implementation in SMAI Appodeal:
 ```c#
 public void ShowMrecBanner()
 {
-    IBannerAd bannerAd = new MrecAdAdapter(AppodealViewPosition.HorizontalSmart, AppodealViewPosition.VerticalBottom);
+    IBannerAd bannerAd = new MrecAdAdapter(
+        AppodealViewPosition.HorizontalSmart, AppodealViewPosition.VerticalBottom);
     bannerAd.Show();
 
-    IBannerAd bannerAd = new MrecAdAdapter(AppodealViewPosition.HorizontalCenter, AppodealViewPosition.VerticalTop);
+    IBannerAd bannerAd = new MrecAdAdapter(
+        AppodealViewPosition.HorizontalCenter, AppodealViewPosition.VerticalTop);
     bannerAd.Show();
 
-    IBannerAd bannerAd = new MrecAdAdapter(AppodealViewPosition.HorizontalRight, AppodealViewPosition.VerticalBottom);
+    IBannerAd bannerAd = new MrecAdAdapter(
+        AppodealViewPosition.HorizontalRight, AppodealViewPosition.VerticalBottom);
     bannerAd.Show();
 
-    IBannerAd bannerAd = new MrecAdAdapter(AppodealViewPosition.HorizontalLeft, AppodealViewPosition.VerticalTop);
+    IBannerAd bannerAd = new MrecAdAdapter(
+        AppodealViewPosition.HorizontalLeft, AppodealViewPosition.VerticalTop);
     bannerAd.Show();
 }
 ```
