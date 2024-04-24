@@ -33,13 +33,13 @@ First of all, you need to initialize the plugin before the first display of ads 
 ```c#
 public sealed class StandartAppodealIntegration : MonoBehaviour
 {
-    private const string ANDROID_APP_KEY = AdInitializationKeys.AppodealKeys.ANDROID_KEY;
-
     private const int AD_TYPES = AppodealAdType.Interstitial | AppodealAdType.RewardedVideo
                                | AppodealAdType.Banner | AppodealAdType.Mrec;
 
     public void Init()
     {
+        var androidKey = new AdInitializationKeys().GetAndroidKey();
+
         Appodeal.SetTesting(true);
         Appodeal.SetUseSafeArea(true);
         Appodeal.MuteVideosIfCallsMuted(true)
@@ -47,7 +47,7 @@ public sealed class StandartAppodealIntegration : MonoBehaviour
         AppodealCallbacks.Sdk.OnInitialized += OnInitializationFinished;
 
 #if UNITY_ANDROID
-        Appodeal.Initialize(ANDROID_APP_KEY, AD_TYPES);
+        Appodeal.Initialize(androidKey, AD_TYPES);
 #endif
     }
 
@@ -58,14 +58,14 @@ public sealed class StandartAppodealIntegration : MonoBehaviour
 ```c#
 public sealed class AppodealIntegrationWithSMAI : MonoBehaviour
 {
-    private const string APP_KEY = AdInitializationKeys.AppodealKeys.ANDROID_KEY;
-
     private const int AD_TYPES = AppodealAdType.Interstitial | AppodealAdType.RewardedVideo
                                | AppodealAdType.Banner | AppodealAdType.Mrec;
 
     public void Init()
     {
-        var adConfig = new AdConfigAdapter.Builder(APP_KEY, AD_TYPES)
+        var androidKey = new AdInitializationKeys().GetAndroidKey();
+
+        var adConfig = new AdConfigAdapter.Builder(androidKey, AD_TYPES)
           .WithTestMode()
           .WithSafeArea()
           .WithMuteVideoAd()
@@ -76,20 +76,27 @@ public sealed class AppodealIntegrationWithSMAI : MonoBehaviour
 
 The **AD_TYPES** constant specifies the types of advertisements that will be used in the project (if you doubt that one of the advertisement types will be used, it is better to delete it to avoid generating unnecessary requests to the Appodeal SDK).
 
-For Appodeal SDK to work correctly on two platforms, you need to initialize different keys, which are created [in the dashboard](https://app.appodeal.com/apps) on the site.
-Therefore, set a value in the [AdInitializationKeys.AppodealKeys](https://github.com/MrVeit/Veittech-SMAI-Appodeal/blob/master/Runtime/Common/Consts/AdInitializationKeys.cs) class for all platforms you plan to use with this media, having previously created them in the dashboard.
+In order for the Appodeal SDK to work correctly on two platforms, you need to initialize the application keys that are created [in the dashboard](https://app.appodeal.com/apps) on the Appodeal website. To do this, you need to set their values using the SMAI Appodeal settings window, which can be found at `SMAI -> Appodeal -> Settings`, having previously created them in the dashboard. 
+
+<p align="center">
+ <img width="700px" src="Assets/SMAISettingsPanel.png" alt="qr"/>
+</p>
+
+P.S: For convenience, the corresponding link to the key creation section can be opened by clicking on `Initialization App Keys`.
 
 **IMPORTANT**: For correct work of Appodeal SDK and avoiding ARN errors. It is necessary to **NOT DESTROY** the initialization config for advertising between scenes via the `DontDestroyOnLoad(gameObject)` method after its initialization.
 
 For example, if you have a project published under Google Play and App Store, the initialization method will have the following form:
 ```c#
-private const string ANDROID_APP_KEY = AdInitializationKeys.AppodealKeys.ANDROID_KEY;
-private const string IOS_APP_KEY = AdInitializationKeys.AppodealKeys.IOS_KEY;
-
 public void Init()
 {
-    var adConfig = new AdConfigAdapter.Builder(ANDROID_APP_KEY, AD_TYPES)
-        .WithIOSAppKey(IOS_APP_KEY)
+    var keysStorage = new AdInitializationKeys();
+
+    var androidKey = keysStorage.GetAndroidKey();
+    var iosKey = keysStorage.GetIosKey();
+
+    var adConfig = new AdConfigAdapter.Builder(androidKey, AD_TYPES)
+        .WithIOSAppKey(iosKey)
         .WithTestMode()
         .WithSafeArea()
         .WithMuteVideoAd()
@@ -104,7 +111,9 @@ For detailed configuration of banner ads there are 3 following initialization me
 ```c#
 public void Init()
 {
-    var adConfig = new AdConfigAdapter.Builder(ANDROID_APP_KEY, AD_TYPES)
+    var androidKey = new AdInitializationKeys().GetAndroidKey();
+
+    var adConfig = new AdConfigAdapter.Builder(androidKey, AD_TYPES)
         .WithTestMode()
         .WithSafeArea()
         .WithMuteVideoAd()
@@ -146,10 +155,12 @@ public void ShowVideoAd()
 }
 ```
 
-To give out rewards for watching ads, the Appodeal SDK has a handy [callback system.](https://docs.appodeal.com/unity/ad-types/rewarded-video#callbacks)
-An example implementation of giving out a reward after the show is shown below:
+Appodeal SDK provides a convenient [callback system](https://docs.appodeal.com/unity/ad-types/rewarded-video#callbacks) for issuing rewards for ad views. 
+Below are **2 examples of implementing such logic**, choose the appropriate way depending on the installed version of SMAI Appodeal in our project:
+
+### Implementing logic with award giving ON VERSION 1.0.7 and below:
 ```c#
-public sealed class DemoUsageTemplate : MonoBehaviour
+public sealed class StandartImplementationOfRewardGiving : MonoBehaviour
 {
     [SerializeField, Space(10)] private Button _rewardedAdButton;
 
@@ -180,6 +191,33 @@ public sealed class DemoUsageTemplate : MonoBehaviour
     private void ClaimReward(object sender, RewardedVideoFinishedEventArgs serverReward)
     {
         Debug.Log($"Reward {serverReward.Amount} after watch ad claimed!");
+    }
+}
+```
+
+### Implementation of logic with awarding of rewards IN VERSION 1.0.8 and higher:
+```c#
+public sealed class FastImplementationOfRewardGiving : MonoBehaviour
+{
+    [SerializeField, Space(10)] private Button _rewardedAdButton;
+
+    private IVideoAdWithReward _rewardedAd;
+
+    private void Start()
+    {
+        _rewardedAd = new RewardedAdAdapter();
+
+        _rewardedAdButton.onClick.AddListener(ShowRewardedAd);
+    }
+
+    private void ShowRewardedAd()
+    {
+        _rewardedAd.Show(ClaimReward);
+    }
+
+    private void ClaimReward()
+    {
+        Debug.Log($"Reward after watch ad claimed!");
     }
 }
 ```
@@ -245,8 +283,7 @@ public void ShowMrecBanner()
 }
 ```
 
-Сontact us:
+# Support
 
 [![Email](https://img.shields.io/badge/-gmail-090909?style=for-the-badge&logo=gmail)](https://mail.google.com/mail/?view=cm&fs=1&to=misster.veit@gmail.com)
-
 [![Telegram](https://img.shields.io/badge/-Telegram-090909?style=for-the-badge&logo=telegram)](https://t.me/MrVeit)
