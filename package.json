@@ -5,9 +5,6 @@
   "description": "Speed up the integration of the Appodeal Ad SDK into your project with a user-friendly api that reduces unnecessary code to a minimum.",
   "unity": "2020.3",
   "unityRelease": "0b5",
-  "dependencies": {
-  "com.appodeal.mediation": "https://github.com/appodeal/appodeal-unity-plugin-upm.git#v3.2.1"
-  },
   "keywords": [
     "SMAI",
     "SMAIAppodeal",
