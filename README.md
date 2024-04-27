@@ -290,8 +290,8 @@ public void CheckEcpm()
     IVideoAd interstitialAd = new InterstitialAdAdapter();
     IVideoAdWithReward rewardedAd = new RewardedAdAdapter();
 
-    Debug.Log($"The current ECPM for interstitial advertising is {interstitialAd.GetPredictedEcpm()}");
-    Debug.Log($"The current ECPM for rewarded advertising is {rewardedAd.GetPredictedEcpm()}");
+    Debug.Log($"The current eCPM for interstitial advertising is {interstitialAd.GetPredictedEcpm()}");
+    Debug.Log($"The current eCPM for rewarded advertising is {rewardedAd.GetPredictedEcpm()}");
 }
 ```
 
@@ -395,19 +395,14 @@ The implementation of obtaining the current ECPM for all types of banners coinci
 public void CheckEcpm()
 {
     IBannerAd classicBannerAd = new ClassicBannerAdAdapter(AppodealShowStyle.BannerBottom);
-    classicBannerAd.Cache();
-
     IBannerAd customBanner = new CustomBannerAdAdapter(
         AppodealViewPosition.HorizontalSmart, AppodealViewPosition.VerticalBottom);
-    customBanner.Cache();
-
     IBannerAd mrecBanner = new MrecAdAdapter(
         AppodealViewPosition.HorizontalSmart, AppodealViewPosition.VerticalBottom);
-    mrecBanner.Cache();
 
-    Debug.Log($"The current ECPM for classic banner ad is {classicBannerAd.GetPredictedEcpm()}");
-    Debug.Log($"The current ECPM for custom banner ad is {customBanner.GetPredictedEcpm()}");
-    Debug.Log($"The current ECPM for mrec banner ad is {mrecBanner.GetPredictedEcpm()}");
+    Debug.Log($"The current eCPM for classic banner ad is {classicBannerAd.GetPredictedEcpm()}");
+    Debug.Log($"The current eCPM for custom banner ad is {customBanner.GetPredictedEcpm()}");
+    Debug.Log($"The current eCPM for mrec banner ad is {mrecBanner.GetPredictedEcpm()}");
 }
 ```
 
