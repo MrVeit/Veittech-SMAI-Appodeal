@@ -1,7 +1,11 @@
 #  SMAI APPODEAL
-[![License](https://img.shields.io/github/license/mrveit/veittech-smai-appodeal?color=318CE7&style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/github/package-json/v/mrveit/veittech-smai-appodeal?color=318CE7&style=flat-square)](package.json)
-[![Unity](https://img.shields.io/badge/Unity-2020.3.16+-2296F3.svg?color=318CE7&style=flat-square)](https://unity.com/releases/editor/archive)
+
+[![Unity](https://img.shields.io/badge/Unity-2020.3.16+-2296F3.svg?color=318CE7&style=flat-square&logo=Unity&logoColor=E0FFFF)](https://unity.com/releases/editor/archive)
+[![Version](https://img.shields.io/github/package-json/v/MrVeit/veittech-smai-appodeal?color=318CE7&style=flat-square&logo=buffer&logoColor=E0FFFF)](package.json)
+[![License](https://img.shields.io/github/license/MrVeit/veittech-smai-appodeal?color=318CE7&style=flat-square&logo=github&logoColor=E0FFFF)](LICENSE)
+![Last commit](https://img.shields.io/github/last-commit/MrVeit/veittech-smai-appodeal/master?color=318CE7&style=flat-square&logo=alwaysdata&logoColor=E0FFFF)
+![Last release](https://img.shields.io/github/release-date/MrVeit/veittech-smai-appodeal?color=318CE7&style=flat-square&logo=Dropbox&logoColor=E0FFFF)
+![Downloads](https://img.shields.io/github/downloads/MrVeit/veittech-smai-appodeal/total?color=318CE7&style=flat-square&logo=codeigniter&logoColor=E0FFFF)
 
 **SMAI Appodeal** is to speed up the integration of Appodeal Ad SDK into your project with a user-friendly api that reduces unnecessary lines of code.
 
